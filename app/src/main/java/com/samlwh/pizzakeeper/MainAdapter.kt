@@ -22,7 +22,7 @@ class MainAdapter(val launchCreatorActivity: (Int?) -> Unit) : RecyclerView.Adap
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.updateView(position)
     }
-
+pizz
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val textView = view.findViewById<TextView>(R.id.textView)
         val button = view.findViewById<Button>(R.id.button)
