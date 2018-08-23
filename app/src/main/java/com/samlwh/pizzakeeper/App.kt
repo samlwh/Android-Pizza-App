@@ -1,8 +1,10 @@
 package com.samlwh.pizzakeeper
 
 import android.app.Application
+import android.arch.persistence.room.Room
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.samlwh.pizzakeeper.data.PizzaDatabase
 import com.samlwh.pizzakeeper.data.Topping
 
 val toppingBitmaps = mutableMapOf<Topping, Bitmap>()
@@ -17,12 +19,18 @@ val toppings = mutableListOf (
     Topping(8, "Spinach", "topping_spinach")
 )
 
+lateinit var db: PizzaDatabase
 
 class App : Application() {
 
     override fun onCreate() {
+
+        db = Room.databaseBuilder(applicationContext, PizzaDatabase::class.java, "PizzaDatabase").build()
+
+
         toppings.forEach {
             toppingBitmaps[it] = getBitmap(it.drawableName)
+            db.toppingDao().insert(it)
         }
         super.onCreate()
     }
