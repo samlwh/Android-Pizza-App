@@ -8,7 +8,7 @@ import android.widget.Switch
 import android.widget.TextView
 import com.samlwh.pizzakeeper.data.Topping
 
-class CreatorAdapter(val pizzaView: PizzaView): RecyclerView.Adapter<CreatorAdapter.ViewHolder>() {
+class CreatorAdapter(val pizzaView: PizzaView,val viewModel: CreatorViewModel): RecyclerView.Adapter<CreatorAdapter.ViewHolder>() {
     val list = mutableListOf<Topping>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,11 +30,12 @@ class CreatorAdapter(val pizzaView: PizzaView): RecyclerView.Adapter<CreatorAdap
             val topping = list[index]
 
             switch.setOnCheckedChangeListener { button, isChecked ->
-              pizzaView.toppings[topping] = isChecked
+              viewModel.switchStates[topping] = isChecked
               pizzaView.invalidate()
             }
 
             textView.text = topping.name
+            switch.isChecked = viewModel.switchStates[topping] ?: false
         }
     }
 }
