@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.samlwh.pizzakeeper.data.PizzaDatabase
 import com.samlwh.pizzakeeper.data.Topping
+import kotlin.concurrent.thread
 
 val toppingBitmaps = mutableMapOf<Topping, Bitmap>()
 val toppings = mutableListOf (
@@ -27,11 +28,15 @@ class App : Application() {
 
         db = Room.databaseBuilder(applicationContext, PizzaDatabase::class.java, "PizzaDatabase").build()
 
-
-        toppings.forEach {
-            toppingBitmaps[it] = getBitmap(it.drawableName)
-            db.toppingDao().insert(it)
+        thread {
+            toppings.forEach {
+                toppingBitmaps[it] = getBitmap(it.drawableName)
+                db.toppingDao().insert(it)
+            }
         }
+
+
+
         super.onCreate()
     }
 
