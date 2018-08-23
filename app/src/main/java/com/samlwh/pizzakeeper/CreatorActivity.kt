@@ -12,6 +12,9 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.Toast
+import com.samlwh.pizzakeeper.data.Pizza
+import com.samlwh.pizzakeeper.data.PizzaTopping
+import kotlin.concurrent.thread
 
 class CreatorActivity : AppCompatActivity() {
     private var pizzaId = -1
@@ -47,7 +50,15 @@ class CreatorActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.delete -> {
-                Toast.makeText(this, "deleted", Toast.LENGTH_SHORT).show()
+                thread {
+                    //pizzaId == -1 <<< cooresponding to a new pizza
+                    if(pizzaId != -1){
+                        //we should delete that pizza
+                        db.pizzaToppingDao().deletePizzaById(pizzaId)
+                        db.pizzaDao().deletePizzaById(pizzaId)
+                    }
+                }
+
                 finish()
             }
             R.id.edit_name -> {
@@ -62,7 +73,18 @@ class CreatorActivity : AppCompatActivity() {
                 }).show()
             }
             R.id.save -> {
-                Toast.makeText(this, "saved", Toast.LENGTH_SHORT).show()
+                thread {
+
+                    val pizza = Pizza(null,viewModel.pizzaName,Date())
+                    val newPizzaId = db.pizzaDao().insert(pizza).toInt()
+
+                    viewModel.switchStates.forEach {
+                        if(it.value){
+                            val pizzaTopping = PizzaTopping(newPizzaId, it.key.id)
+                            db.pizzaToppingDao().insert(pizzaTopping)
+                        }
+                    }
+                }
                 finish()
             }
         }

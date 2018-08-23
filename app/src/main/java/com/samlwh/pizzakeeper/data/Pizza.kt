@@ -7,8 +7,8 @@ import java.util.*
 @Entity
 data class Pizza (
 
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true )
+    val id: Int?,
     val name: String,
     val creationDate: Date
 )
